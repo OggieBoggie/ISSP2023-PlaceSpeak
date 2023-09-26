@@ -1,20 +1,26 @@
-# Next.js
-.next/
-out/
-node_modules/
+# Root directory
+*.log
+
+# Next.js (mynextapp/)
+mynextapp/.next/
+mynextapp/out/
+mynextapp/node_modules/
+
+# Django (myproject/)
+myproject/__pycache__/
+myproject/*.pyc
+myproject/*.pyo
+myproject/db.sqlite3
+myproject/db.sqlite3-journal
+myproject/media/  # If you have a media folder for uploaded files
 
 # Python
-__pycache__/
-*.pyc
-*.pyo
 *.egg-info/
 dist/
 build/
 *.egg
 *.log
 *.pot
-*.pyc
-*.pyo
 *.rej
 *.swp
 *.swpx
@@ -22,8 +28,6 @@ build/
 *.orig
 *.swo
 *.db
-*.sqlite3
-*.sqlite3-journal
 *.pid.lock
 *.pytest_cache/
 *.coverage
