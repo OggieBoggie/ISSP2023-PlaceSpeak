@@ -45,12 +45,12 @@ const NeighborhoodSelector: React.FC = () => {
       <label>Select Neighborhood: </label>
       <select onChange={handleGIDChange}>
         <option value="">--Select a Neighborhood--</option>
-        <option value="1">Neighborhood 1</option>
-        <option value="2">Neighborhood 2</option>
+        <option value="1">Arbutus Ridge</option>
+        <option value="2">Grandview-Woodland</option>
         {/* Add more options as needed */}
       </select>
 
-      {selectedGID && <Map gid={selectedGID} />}
+      {selectedGID && <Map nbhd="van_nbhd" gid={selectedGID} />}
     </div>
   );
 };

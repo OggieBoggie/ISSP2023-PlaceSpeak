@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .models import Item, Van_Nbhd
+from .models import Item, Van_Nbhd, Ca_Nbhd
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import Van_Nbhd_Serializer
+from .serializers import Van_Nbhd_Serializer, Ca_Nbhd_Serializer
 
 # Create your views here.
 
@@ -18,6 +18,17 @@ def api_item_list(request):
     items = Item.objects.all()
     item_list = [{"id": item.id, "name": item.name, "description": item.description} for item in items]
     return JsonResponse(item_list, safe=False)
+
+
+@api_view(['GET'])
+def get_ca_nbhd(request, gid):
+    try:
+        nbhd = Ca_Nbhd.objects.get(gid=gid)
+    except Ca_Nbhd.DoesNotExist:
+        return Response({"error": "Neighborhood not found"}, status=404)
+
+    serializer = Ca_Nbhd_Serializer(nbhd)
+    return Response(serializer.data)
 
 
 @api_view(['GET'])
