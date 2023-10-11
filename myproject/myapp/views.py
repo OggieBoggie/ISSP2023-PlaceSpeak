@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from .models import Item, Van_Nbhd, Ca_Nbhd
+from .models import Item, Van_Nbhd, Ca_Nbhd, User
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializers import Van_Nbhd_Serializer, Ca_Nbhd_Serializer
+from rest_framework import status
+from .serializers import Van_Nbhd_Serializer, Ca_Nbhd_Serializer, UserSerializer
 
 # Create your views here.
 
@@ -40,3 +41,28 @@ def get_van_nbhd(request, gid):
 
     serializer = Van_Nbhd_Serializer(nbhd)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+def save_user(request):
+    print(request.data)
+    if request.method == 'POST':
+        print(request.data)
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data.get('email')
+            name = serializer.validated_data.get('name')
+            image = serializer.validated_data.get('image')
+
+            user, created = User.objects.get_or_create(email=email, defaults={
+                'name': name,
+                'image': image
+            })
+
+            if created:
+                return Response({'message': f'User {user} created successfully.'}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({'message': f'User {user} already exists.'}, status=status.HTTP_200_OK)
+
+        print(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

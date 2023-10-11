@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Van_Nbhd, Ca_Nbhd
+from .models import Van_Nbhd, Ca_Nbhd, User
 import json
 
 
@@ -19,3 +19,11 @@ class Van_Nbhd_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Van_Nbhd
         fields = ['gid', 'name', 'geom']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(validators=[])
+    
+    class Meta:
+        model = User
+        fields = ('email', 'name', 'image')

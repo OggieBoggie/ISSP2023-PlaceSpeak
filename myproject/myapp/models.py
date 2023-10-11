@@ -40,3 +40,9 @@ class Van_Nbhd(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class User(models.Model):
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=255)
+    image = models.URLField(blank=True, null=True)
