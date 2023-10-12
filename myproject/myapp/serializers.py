@@ -26,4 +26,10 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('email', 'name', 'image')
+        fields = ['email', 'name', 'image']
+
+
+class UserLocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'name', 'image', 'latitude', 'longitude']
