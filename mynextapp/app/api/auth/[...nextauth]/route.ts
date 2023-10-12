@@ -20,7 +20,6 @@ const handler = NextAuth({
           image: user.image,
         }),
       });
-      console.log(user.email, user.name, user.image);
       // Check if the user was saved successfully
       if (res.ok) {
         return true; // Allow sign-in
