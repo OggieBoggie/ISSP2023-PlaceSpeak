@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 export default function Profile() {
   const { data: session } = useSession();
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+    <div className="flex flex-col items-center p-8">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
         <img
           className="mx-auto h-24 w-24 rounded-full"

@@ -1,8 +1,8 @@
 "use client";
 import "leaflet/dist/leaflet.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { MapContainer, TileLayer, Polygon, Marker } from "react-leaflet";
+import { MapContainer, Polygon, Marker, useMap } from "react-leaflet";
 
 import L from "leaflet";
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -16,21 +16,39 @@ let DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
+function TileLayer() {
+  const map = useMap();
+
+  useEffect(() => {
+    new L.TileLayer(
+      `https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}@2x?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`,
+      {
+        tileSize: 512,
+        zoomOffset: -1,
+      }
+    ).addTo(map);
+  }, []);
+
+  return null;
+}
+
 const MapWithLocation: React.FC = () => {
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [neighborhood, setNeighborhood] = useState<any | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { data: session } = useSession();
 
   const getLocation = () => {
+    setIsLoading(true);
     navigator.geolocation.getCurrentPosition(async (pos) => {
       // const { latitude, longitude } = pos.coords;
-      //   setPosition([latitude, longitude]);
+      // setPosition([latitude, longitude]);
       setPosition([49.2482, -123.1378]);
 
       // Call API to get the neighborhood boundary
       try {
         const response = await fetch(
-          //   `http://127.0.0.1:8000/myapp/api/van_nbhd/?latitude=${latitude}&longitude=${longitude}`
+          // `http://127.0.0.1:8000/myapp/api/van_nbhd/?latitude=${latitude}&longitude=${longitude}`
           `http://127.0.0.1:8000/myapp/api/van_nbhd/?latitude=${49.2482}&longitude=${-123.1378}`
         );
         const data = await response.json();
@@ -69,29 +87,42 @@ const MapWithLocation: React.FC = () => {
         .catch((error) => {
           console.error("Error saving location:", error);
         });
+      setIsLoading(false);
     });
   };
 
   return (
-    <div>
-      <button onClick={getLocation}>Get My Location</button>
-      {position && (
+    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col w-full">
+      <div className="flex justify-between items-center mb-4">
+        <label className="text-xl font-bold">Location</label>
+        <button
+          onClick={getLocation}
+          className="bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-200 ease-in-out"
+        >
+          Get My Location
+        </button>
+      </div>
+
+      {isLoading && !position ? (
+        <div className="flex justify-center items-center mt-4">
+          <p className="text-lg font-bold text-center text-blue-500">
+            Loading...
+          </p>
+        </div>
+      ) : position ? (
         <MapContainer
           center={position}
           zoom={13}
           zoomSnap={1}
-          style={{ height: "500px", width: "50%" }}
+          style={{ height: "400px", width: "100%" }}
         >
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
+          <TileLayer />
           {neighborhood && (
             <Polygon positions={neighborhood} color="blue" fillOpacity={0.2} />
           )}
           <Marker position={position} />
         </MapContainer>
-      )}
+      ) : null}
     </div>
   );
 };
