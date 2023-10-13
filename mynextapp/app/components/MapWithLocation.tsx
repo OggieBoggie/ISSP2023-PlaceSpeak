@@ -59,11 +59,11 @@ const MapWithLocation: React.FC<MapWithLocationProps> = ({
 
       // Call API to get the neighborhood boundary
       setNeighborhood(
-        getNbhdAction({ latitude: 49.2482, longitude: -123.1378 })
+        await getNbhdAction({ latitude: 49.2482, longitude: -123.1378 })
       );
 
       // Call API to save the user location
-      updateUsrLocAction({ latitude: 49.2482, longitude: -123.1378 });
+      await updateUsrLocAction({ latitude: 49.2482, longitude: -123.1378 });
 
       setIsLoading(false);
     });
