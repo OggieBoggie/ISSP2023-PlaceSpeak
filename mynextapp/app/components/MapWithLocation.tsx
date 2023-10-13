@@ -1,7 +1,6 @@
 "use client";
 import "leaflet/dist/leaflet.css";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { MapContainer, Polygon, Marker, useMap } from "react-leaflet";
 
 import L from "leaflet";
@@ -32,61 +31,40 @@ function TileLayer() {
   return null;
 }
 
-const MapWithLocation: React.FC = () => {
+interface PointProps {
+  latitude: number;
+  longitude: number;
+}
+
+interface MapWithLocationProps {
+  getNbhdAction: (arg0: PointProps) => Promise<any>;
+  updateUsrLocAction: (arg0: PointProps) => Promise<void>;
+}
+
+const MapWithLocation: React.FC<MapWithLocationProps> = ({
+  getNbhdAction,
+  updateUsrLocAction,
+}: MapWithLocationProps) => {
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [neighborhood, setNeighborhood] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { data: session } = useSession();
 
   const getLocation = () => {
     setIsLoading(true);
+
     navigator.geolocation.getCurrentPosition(async (pos) => {
       // const { latitude, longitude } = pos.coords;
       // setPosition([latitude, longitude]);
       setPosition([49.2482, -123.1378]);
 
       // Call API to get the neighborhood boundary
-      try {
-        const response = await fetch(
-          // `http://127.0.0.1:8000/myapp/api/van_nbhd/?latitude=${latitude}&longitude=${longitude}`
-          `http://127.0.0.1:8000/myapp/api/van_nbhd/?latitude=${49.2482}&longitude=${-123.1378}`
-        );
-        const data = await response.json();
+      setNeighborhood(
+        getNbhdAction({ latitude: 49.2482, longitude: -123.1378 })
+      );
 
-        if (data && data.geom && data.geom.coordinates) {
-          const reversedCoords = data.geom.coordinates[0][0].map(
-            (coord: any) => [coord[1], coord[0]]
-          );
-          setNeighborhood(reversedCoords);
-        }
-      } catch (error) {
-        console.error("Error fetching neighborhood data:", error);
-      }
+      // Call API to save the user location
+      updateUsrLocAction({ latitude: 49.2482, longitude: -123.1378 });
 
-      if (!session?.user?.email) {
-        console.error("Error: Email is missing for the user");
-        return; // Early return to stop the function execution
-      }
-      fetch(
-        `http://127.0.0.1:8000/myapp/api/user_location/${session.user.email}/`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,
-          }),
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Location saved:", data);
-        })
-        .catch((error) => {
-          console.error("Error saving location:", error);
-        });
       setIsLoading(false);
     });
   };
