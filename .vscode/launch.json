@@ -1,0 +1,60 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Current File - Pwd of File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "cwd": "${fileDirname}"
+    },
+    {
+      "name": "Python: Current File with a single argument",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "args": ["${input:specifyArgs}"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Current File with command line args (parsed)",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "args": "${input:specifyArgs}",
+      "console": "integratedTerminal",
+      "cwd": "${fileDirname}"
+    },
+    {
+      "name": "Django",
+      "type": "python",
+      "request": "launch",
+      "program": "${fileDirname}/manage.py",
+      "args": ["runserver"],
+      "django": true
+    }
+  ],
+  "inputs": [
+    {
+      "id": "specifyArgs",
+      "description": "Specify command line arguments as a string",
+      "type": "promptString"
+    },
+    {
+      "id": "commandline",
+      "description": "Specify command line arguments as a string",
+      "type": "promptString"
+    }
+  ]
+}
