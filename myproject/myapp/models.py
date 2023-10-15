@@ -40,3 +40,17 @@ class Van_Nbhd(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class User(models.Model):
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=255)
+    image = models.URLField(blank=True, null=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
+    class Meta:
+        db_table = 'myapp_user'
+
+    def __str__(self):
+        return self.email

@@ -6,4 +6,7 @@ urlpatterns = [
     path('api/items/', views.api_item_list, name='api_item_list'),
     path('api/van_nbhd/<int:gid>/', views.get_van_nbhd),
     path('api/ca_nbhd/<int:gid>/', views.get_ca_nbhd),
+    path('api/saveuser/', views.save_user, name='save_user'),
+    path('api/van_nbhd/', views.get_van_nbhd_over_point, name='get_van_nbhd_over_point'),
+    path('api/user_location/<str:email>/', views.update_user_location, name='update_user_location'),
 ]
