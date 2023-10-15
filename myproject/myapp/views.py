@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from .models import Item, Van_Nbhd, Ca_Nbhd, User
+from .models import Item, Van_Nbhd, Ca_Nbhd, User, Poll
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from rest_framework import status
-from .serializers import Van_Nbhd_Serializer, Ca_Nbhd_Serializer, UserSerializer, UserLocationSerializer
+from rest_framework import status, generics, mixins
+from .serializers import Van_Nbhd_Serializer, Ca_Nbhd_Serializer, UserSerializer, UserLocationSerializer, PollSerializer
 from django.contrib.gis.geos import Point
 
 # Create your views here.
@@ -104,3 +104,23 @@ def update_user_location(request, email):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PollCreateUpdateRetrieveAPIView(mixins.CreateModelMixin,
+                                      mixins.RetrieveModelMixin,
+                                      mixins.UpdateModelMixin,
+                                      mixins.ListModelMixin,
+                                      generics.GenericAPIView):
+    queryset = Poll.objects.all()
+    serializer_class = PollSerializer
+
+    def get(self, request, *args, **kwargs):
+        if 'pk' in kwargs:
+            return self.retrieve(request, *args, **kwargs)
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
