@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import Profile from "../components/Profile";
+import Profile from "../components/profile";
 import UserInfo from "../components/UserInfo";
 import dynamic from "next/dynamic";
 import { getServerSession } from "next-auth";
