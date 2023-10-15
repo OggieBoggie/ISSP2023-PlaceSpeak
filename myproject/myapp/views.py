@@ -111,8 +111,13 @@ class PollCreateUpdateRetrieveAPIView(mixins.CreateModelMixin,
                                       mixins.UpdateModelMixin,
                                       mixins.ListModelMixin,
                                       generics.GenericAPIView):
-    queryset = Poll.objects.all()
     serializer_class = PollSerializer
+
+    def get_queryset(self):
+        limit = self.request.query_params.get('limit', None)
+        if limit and limit.isdigit():
+            return Poll.objects.all().order_by('-created_at')[:int(limit)]
+        return Poll.objects.all()
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
