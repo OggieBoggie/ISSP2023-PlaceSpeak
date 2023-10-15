@@ -144,3 +144,4 @@ INTERNAL_IPS = [
 ]
 
 GDAL_LIBRARY_PATH = r'C:\OSGeo4W\bin\gdal307.dll'
+GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
