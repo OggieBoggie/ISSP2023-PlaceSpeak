@@ -45,11 +45,22 @@ class ChoiceSerializer(serializers.ModelSerializer):
 
 
 class PollSerializer(serializers.ModelSerializer):
+    created_by = serializers.EmailField(read_only=False)
     choices = ChoiceSerializer(many=True, required=False)
 
     class Meta:
         model = Poll
         fields = ('id', 'title', 'description', 'created_by', 'created_at', 'choices')
+
+    def validate_created_by(self, email):
+        """
+        Check if the email exists in the User model.
+        If it exists, return the user instance.
+        """
+        try:
+            return User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User with this email does not exist")
 
     def create(self, validated_data):
         choices_data = validated_data.pop('choices', [])
