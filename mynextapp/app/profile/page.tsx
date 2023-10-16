@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Profile from "../components/profile";
 import UserInfo from "../components/UserInfo";
+import NewsFeed from "../components/NewsFeed";
 import dynamic from "next/dynamic";
 import { getServerSession } from "next-auth";
 
@@ -85,6 +86,9 @@ export default async function Component() {
                 getNbhdAction={get_nbhd}
                 updateUsrLocAction={update_user_location}
               />
+            </div>
+            <div className="mt-4">
+              <NewsFeed />
             </div>
           </div>
         </div>
