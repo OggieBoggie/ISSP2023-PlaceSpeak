@@ -92,7 +92,7 @@ DATABASES = {
         'NAME': 'inventory',
         'USER': 'postgres',
         'PASSWORD': 'Password',
-        'HOST': 'localhost',
+        'HOST': 'ps-rds-01.crilvbrbwzye.us-east-1.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
