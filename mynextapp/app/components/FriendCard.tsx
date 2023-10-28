@@ -12,7 +12,7 @@ function MoreButton({ onClick }: { onClick: () => void }) {
   }
 
 export default function Friend_Card(props: any) {
-    const { image, name, location, description, isMenuVisible, toggleMenu } = props;
+    const { image, name, email, description, isMenuVisible, toggleMenu } = props;
 
     return (
         <div className="bg-white shadow-md rounded-lg p-6 mx-4 relative">
@@ -32,7 +32,7 @@ export default function Friend_Card(props: any) {
                 </div>
             )}
             <p className="text-gray-600 text-center">{name}</p>
-            <p className="text-gray-600 text-center"><strong>Location: </strong> {location}</p>
+            <p className="text-gray-600 text-center"><strong>Email: </strong> {email}</p>
             <p className="mt-2 text-gray-500 text-center">{description}</p>
         </div>
     );
