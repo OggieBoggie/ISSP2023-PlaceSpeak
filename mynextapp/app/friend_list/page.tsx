@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import FriendCard from '../components/FriendCard'
+import FriendCard from '../components/FriendCard';
 
 const UsersPage: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
@@ -36,7 +36,6 @@ const UsersPage: React.FC = () => {
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-start p-24">
-
             {/* Search Input */}
             <input
                 type='text'
