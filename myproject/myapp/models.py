@@ -10,10 +10,16 @@ class Item(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     location = gis_models.PointField(srid=4326, default=Point(-122.938144, 49.223333))
-
+    
     def __str__(self):
         return self.name
 
+class Badge(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
 
 class Ca_Nbhd(models.Model):
     gid = models.AutoField(primary_key=True, default=1)
