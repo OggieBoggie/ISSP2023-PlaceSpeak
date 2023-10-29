@@ -89,6 +89,11 @@ def get_van_nbhd_over_point(request):
     except Van_Nbhd.DoesNotExist:
         return Response({"error": "No neighborhood found for given coordinates"}, status=status.HTTP_404_NOT_FOUND)
 
+@api_view(['GET'])
+def get_all_users(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET', 'PUT'])
 def update_user_location(request, email):
