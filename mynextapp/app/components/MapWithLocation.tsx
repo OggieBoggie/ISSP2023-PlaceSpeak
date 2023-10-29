@@ -55,15 +55,15 @@ const MapWithLocation: React.FC<MapWithLocationProps> = ({
     navigator.geolocation.getCurrentPosition(async (pos) => {
       // const { latitude, longitude } = pos.coords;
       // setPosition([latitude, longitude]);
-      setPosition([49.2482, -123.1378]);
+      setPosition([49.283398, -123.115126]);
 
       // Call API to get the neighborhood boundary
       setNeighborhood(
-        await getNbhdAction({ latitude: 49.2482, longitude: -123.1378 })
+        await getNbhdAction({ latitude: 49.283398, longitude: -123.115126 })
       );
 
       // Call API to save the user location
-      await updateUsrLocAction({ latitude: 49.2482, longitude: -123.1378 });
+      await updateUsrLocAction({ latitude: 49.283398, longitude: -123.115126 });
 
       setIsLoading(false);
     });
