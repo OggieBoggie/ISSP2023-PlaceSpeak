@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework_gis import serializers as gis_serializers
 from rest_framework.exceptions import ValidationError
 from .models import Van_Nbhd, Ca_Nbhd, User, Poll, Choice
 import json
@@ -24,15 +25,16 @@ class Van_Nbhd_Serializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(validators=[])
-    
+
     class Meta:
         model = User
         fields = ['email', 'name', 'image']
 
 
-class UserLocationSerializer(serializers.ModelSerializer):
+class UserLocationSerializer(gis_serializers.GeoFeatureModelSerializer):
     class Meta:
         model = User
+        geo_field = "location"
         fields = ['email', 'name', 'image', 'latitude', 'longitude']
 
 
@@ -50,7 +52,8 @@ class PollSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Poll
-        fields = ('id', 'title', 'description', 'created_by', 'created_at', 'choices')
+        fields = ('id', 'title', 'description',
+                  'created_by', 'created_at', 'choices')
 
     def validate_created_by(self, email):
         """
@@ -60,7 +63,8 @@ class PollSerializer(serializers.ModelSerializer):
         try:
             return User.objects.get(email=email)
         except User.DoesNotExist:
-            raise serializers.ValidationError("User with this email does not exist")
+            raise serializers.ValidationError(
+                "User with this email does not exist")
 
     def create(self, validated_data):
         choices_data = validated_data.pop('choices', [])
@@ -72,11 +76,14 @@ class PollSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         choices_data = validated_data.pop('choices', [])
         instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
+        instance.description = validated_data.get(
+            'description', instance.description)
 
         # Get existing choice IDs for the poll
-        existing_choice_ids = set(instance.choices.values_list('id', flat=True))
-        received_choice_ids = {choice.get("id") for choice in choices_data if "id" in choice}
+        existing_choice_ids = set(
+            instance.choices.values_list('id', flat=True))
+        received_choice_ids = {choice.get(
+            "id") for choice in choices_data if "id" in choice}
 
         # Choices to be deleted
         for choice_id in existing_choice_ids - received_choice_ids:

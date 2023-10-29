@@ -9,7 +9,8 @@ from django.contrib.gis.db.models.functions import Transform
 class Item(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    location = gis_models.PointField(srid=4326, default=Point(-122.938144, 49.223333))
+    location = gis_models.PointField(
+        srid=4326, default=Point(-122.938144, 49.223333))
 
     def __str__(self):
         return self.name
@@ -48,6 +49,7 @@ class User(models.Model):
     image = models.URLField(blank=True, null=True)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
+    location = gis_models.PointField(null=True, blank=True, srid=4326)
 
     class Meta:
         db_table = 'myapp_user'
@@ -59,8 +61,10 @@ class User(models.Model):
 class Poll(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="polls")
-    created_at = models.DateTimeField(auto_now_add=True)  # timestamp of when the poll was created
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="polls")
+    # timestamp of when the poll was created
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'myapp_poll'
@@ -70,9 +74,11 @@ class Poll(models.Model):
 
 
 class Choice(models.Model):
-    poll = models.ForeignKey(Poll, on_delete=models.CASCADE, related_name="choices")
+    poll = models.ForeignKey(
+        Poll, on_delete=models.CASCADE, related_name="choices")
     text = models.CharField(max_length=255)
-    vote_count = models.IntegerField(default=0)  # store the count of votes for optimization
+    # store the count of votes for optimization
+    vote_count = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'myapp_choice'
@@ -82,14 +88,19 @@ class Choice(models.Model):
 
 
 class Vote(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="votes")
-    poll = models.ForeignKey(Poll, on_delete=models.CASCADE, related_name="votes")
-    choice = models.ForeignKey(Choice, on_delete=models.CASCADE, related_name="votes")
-    cast_at = models.DateTimeField(auto_now_add=True)  # timestamp of when the vote was cast
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="votes")
+    poll = models.ForeignKey(
+        Poll, on_delete=models.CASCADE, related_name="votes")
+    choice = models.ForeignKey(
+        Choice, on_delete=models.CASCADE, related_name="votes")
+    # timestamp of when the vote was cast
+    cast_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'myapp_vote'
-        unique_together = ('user', 'poll')  # ensuring one user can only vote once for a poll
+        # ensuring one user can only vote once for a poll
+        unique_together = ('user', 'poll')
 
     def __str__(self):
         return f"{self.user.email} voted for {self.choice.text} in {self.poll.title}"
