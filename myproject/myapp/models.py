@@ -7,13 +7,16 @@ from django.contrib.gis.db.models.functions import Transform
 
 # Test Model
 
+
 class Item(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
-    location = gis_models.PointField(srid=4326, default=Point(-122.938144, 49.223333))
+    location = gis_models.PointField(
+        srid=4326, default=Point(-122.938144, 49.223333))
 
     def __str__(self):
         return self.name
+
 
 class Badge(models.Model):
     name = models.CharField(max_length=100)
@@ -24,6 +27,7 @@ class Badge(models.Model):
 
 # User Related Models
 
+
 class User(models.Model):
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=255)
@@ -33,7 +37,8 @@ class User(models.Model):
     birthday = models.DateField(blank=True, null=True)
     gender = models.CharField(
         max_length=10,
-        choices=[("select", "-- Select your Gender -- "),("male", "Male"), ("female", "Female"), ("other", "Other")],
+        choices=[("select", "-- Select your Gender -- "),
+                 ("male", "Male"), ("female", "Female"), ("other", "Other")],
         default="select"
     )
     image = models.URLField(blank=True, null=True)
@@ -42,6 +47,7 @@ class User(models.Model):
     linkedin_url = models.TextField(blank=True, null=True)
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
+    location = gis_models.PointField(null=True, blank=True, srid=4326)
 
     class Meta:
         db_table = 'myapp_user'
@@ -51,22 +57,29 @@ class User(models.Model):
 
 # UserFriend
 
+
 class FriendShip(models.Model):
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
-    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name="friend")
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="user")
+    friend = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="friend")
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=10)  # define choices here
 
     class Meta:
         db_table = 'myapp_friendship'
 
+
 class User_Friend(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_friends")
-    friend = models.ForeignKey(User, on_delete=models.CASCADE, related_name="friend_of_users")
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="user_friends")
+    friend = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="friend_of_users")
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=10,
-        choices=[("pending", "Pending"), ("accepted", "Accepted"), ("rejected", "Rejected")],
+        choices=[("pending", "Pending"), ("accepted", "Accepted"),
+                 ("rejected", "Rejected")],
         default="pending"
     )
 
@@ -91,6 +104,7 @@ class Badges(models.Model):
     def __str__(self):
         return self.Name
 
+
 class UserBadge(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     badge = models.ForeignKey(Badges, on_delete=models.CASCADE)
@@ -100,6 +114,7 @@ class UserBadge(models.Model):
         db_table = 'myapp_userbadges'
 
 # Poll Related Models
+
 
 class Poll(models.Model):
     title = models.CharField(max_length=255)
@@ -152,7 +167,7 @@ class Vote(models.Model):
 
     def __str__(self):
         return f"{self.user.email} voted for {self.choice.text} in {self.poll.title}"
-    
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=255)
@@ -161,6 +176,7 @@ class Tag(models.Model):
         return self.name
 
 # Map Based Models
+
 
 class Ca_Nbhd(models.Model):
     gid = models.AutoField(primary_key=True, default=1)
