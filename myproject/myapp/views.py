@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status, generics, mixins
-from .serializers import Van_Nbhd_Serializer, Ca_Nbhd_Serializer, UserSerializer, UserLocationSerializer, PollSerializer
+from .serializers import Van_Nbhd_Serializer, Ca_Nbhd_Serializer, UserSerializer, UserLocationSerializer, PollSerializer, BadgeSerializer
 from django.contrib.gis.geos import Point
 
 # Create your views here.
@@ -204,3 +204,14 @@ class PollCreateUpdateRetrieveAPIView(mixins.CreateModelMixin,
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+
+@api_view(['GET'])
+def get_user_badges(request, email):
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    badges = user.badges.all()
+    serializer = BadgeSerializer(badges, many=True)
+    return Response(serializer.data)

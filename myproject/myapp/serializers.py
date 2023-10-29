@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework_gis import serializers as gis_serializers
 from rest_framework.exceptions import ValidationError
-from .models import Van_Nbhd, Ca_Nbhd, User, Poll, Choice
+from .models import Van_Nbhd, Ca_Nbhd, User, Poll, Choice, Badge
 import json
 
 
@@ -22,13 +22,18 @@ class Van_Nbhd_Serializer(serializers.ModelSerializer):
         model = Van_Nbhd
         fields = ['gid', 'name', 'geom']
 
+class BadgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Badge
+        fields = ['id', 'name', 'description']
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(validators=[])
+    badges = BadgeSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'name', 'image']
+        fields = ['email', 'name', 'image', 'badges']
 
 
 class UserLocationSerializer(gis_serializers.GeoFeatureModelSerializer):
@@ -100,3 +105,6 @@ class PollSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+
