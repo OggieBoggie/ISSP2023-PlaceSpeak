@@ -12,13 +12,15 @@ from django.contrib.gis.geos import Point
 
 def item_list(request):
     items = Item.objects.all()
-    items_data = [{'name': item.name, 'location': item.location} for item in items]
+    items_data = [{'name': item.name, 'location': item.location}
+                  for item in items]
     return render(request, "hello.html", {"items": items_data})
 
 
 def api_item_list(request):
     items = Item.objects.all()
-    item_list = [{"id": item.id, "name": item.name, "description": item.description} for item in items]
+    item_list = [{"id": item.id, "name": item.name,
+                  "description": item.description} for item in items]
     return JsonResponse(item_list, safe=False)
 
 
@@ -76,8 +78,9 @@ def get_van_nbhd_over_point(request):
     except (ValueError, TypeError):
         return Response({"error": "Invalid longitude or latitude values"}, status=status.HTTP_400_BAD_REQUEST)
 
-    point = Point(longitude, latitude, srid=4326)  # Note the ordering: (longitude, latitude)
-    
+    # Note the ordering: (longitude, latitude)
+    point = Point(longitude, latitude, srid=4326)
+
     try:
         neighborhood = Van_Nbhd.objects.get(geom__contains=point)
         print(neighborhood)
@@ -85,7 +88,7 @@ def get_van_nbhd_over_point(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Van_Nbhd.DoesNotExist:
         return Response({"error": "No neighborhood found for given coordinates"}, status=status.HTTP_404_NOT_FOUND)
-    
+
 
 @api_view(['GET', 'PUT'])
 def update_user_location(request, email):
@@ -99,11 +102,51 @@ def update_user_location(request, email):
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        serializer = UserLocationSerializer(user, data=request.data, partial=True)
+        # Convert the provided latitude and longitude to a Point
+        longitude = float(request.data.get('longitude'))
+        latitude = float(request.data.get('latitude'))
+        location_point = Point(longitude, latitude, srid=4326)
+        request.data['location'] = location_point
+
+        serializer = UserLocationSerializer(
+            user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_users_in_same_neighborhood(request, user_email):
+    # Finding user with the given email
+    try:
+        user = User.objects.get(email=user_email)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if not user.latitude or not user.longitude:
+        return Response({"error": "User location not available"}, status=status.HTTP_404_NOT_FOUND)
+    print(user.latitude, user.longitude)
+    # Note the ordering: (longitude, latitude)
+    point = Point(user.longitude, user.latitude, srid=4326)
+
+    # Finding neighborhood for the user's location
+    try:
+        neighborhood = Van_Nbhd.objects.get(geom__contains=point)
+    except Van_Nbhd.DoesNotExist:
+        return Response({"error": "No neighborhood found for user's coordinates"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Finding users within the same neighborhood
+    users_in_neighborhood = User.objects.filter(
+        latitude__isnull=False,
+        longitude__isnull=False,
+        location__within=neighborhood.geom  # The ORM lookup
+    ).exclude(email=user_email)
+
+    # Extracting emails
+    emails = [user.email for user in users_in_neighborhood]
+
+    return Response({"users": emails}, status=status.HTTP_200_OK)
 
 
 class PollCreateUpdateRetrieveAPIView(mixins.CreateModelMixin,

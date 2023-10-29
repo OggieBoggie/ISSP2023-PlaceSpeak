@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import Profile from "../components/profile";
+import Profile from "../components/Profile";
 import Badges from "../components/Badges";
 import UserInfo from "../components/UserInfo";
 import NewsFeed from "../components/NewsFeed";
