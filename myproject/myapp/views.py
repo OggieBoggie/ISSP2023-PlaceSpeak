@@ -157,10 +157,37 @@ class PollCreateUpdateRetrieveAPIView(mixins.CreateModelMixin,
     serializer_class = PollSerializer
 
     def get_queryset(self):
+        email = self.request.query_params.get('email', None)
         limit = self.request.query_params.get('limit', None)
+        queryset = Poll.objects.all()
+
+        if email:
+            try:
+                # Fetch the user
+                user = User.objects.get(email=email)
+                # Check user's location
+                if not user.latitude or not user.longitude:
+                    return Poll.objects.none()
+                user_point = Point(user.longitude, user.latitude, srid=4326)
+                # Fetch the neighborhood
+                neighborhood = Van_Nbhd.objects.get(geom__contains=user_point)
+                # Fetch users in the same neighborhood
+                users_in_neighborhood = User.objects.filter(
+                    latitude__isnull=False,
+                    longitude__isnull=False,
+                    location__within=neighborhood.geom
+                )
+                user_emails_in_neighborhood = [
+                    user.email for user in users_in_neighborhood]
+                queryset = queryset.filter(
+                    created_by__email__in=user_emails_in_neighborhood)
+            except (User.DoesNotExist, Van_Nbhd.DoesNotExist):
+                return Poll.objects.none()
+
         if limit and limit.isdigit():
-            return Poll.objects.all().order_by('-created_at')[:int(limit)]
-        return Poll.objects.all()
+            queryset = queryset.order_by('-created_at')[:int(limit)]
+
+        return queryset
 
     def get(self, request, *args, **kwargs):
         if 'pk' in kwargs:
