@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Profile from "../components/profile";
+import Badges from "../components/Badges";
 import UserInfo from "../components/UserInfo";
 import NewsFeed from "../components/NewsFeed";
 import dynamic from "next/dynamic";
@@ -77,6 +78,7 @@ export default async function Component() {
         <div className="flex flex-col md:flex-row md:flex-grow">
           <div className="flex-1 p-4 md:max-w-md">
             <Profile />
+            <Badges />
           </div>
 
           <div className="w-full md:w-2/3 p-4 mt-4 md:mt-8">
