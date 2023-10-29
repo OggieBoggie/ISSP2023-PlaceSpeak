@@ -2,14 +2,16 @@ import { useState, useEffect } from "react";
 import { SocketType } from "../types/socket";
 import { Poll } from "../types/polls";
 import { Transition } from "@headlessui/react";
+import { useSession } from "next-auth/react";
 
 const LatestPolls = ({ socket }: { socket: SocketType }) => {
+  const { data: session } = useSession();
   const [polls, setPolls] = useState<Poll[]>([]);
   const [newPolls, setNewPolls] = useState<Poll[]>([]);
 
   const fetchPolls = async () => {
     const response = await fetch(
-      "http://127.0.0.1:8000/myapp/api/polls/?limit=2"
+      `http://127.0.0.1:8000/myapp/api/polls/?email=${session?.user?.email}&limit=2`
     );
     const latestData = await response.json();
 
