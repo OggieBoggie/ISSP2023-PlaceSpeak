@@ -41,6 +41,7 @@ class User(models.Model):
                  ("male", "Male"), ("female", "Female"), ("other", "Other")],
         default="select"
     )
+    points = models.IntegerField(default=10)
     image = models.URLField(blank=True, null=True)
     facebook_url = models.TextField(blank=True, null=True)
     twitter_x_url = models.TextField(blank=True, null=True)

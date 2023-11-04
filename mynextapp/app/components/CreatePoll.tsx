@@ -13,7 +13,7 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
       created_by: session?.user?.email ?? "Unknown",
     };
 
-    const response = await fetch("http://127.0.0.1:8000/myapp/api/polls/", {
+    const createPollResponse = await fetch("http://127.0.0.1:8000/myapp/api/polls/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -21,12 +21,30 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
       body: JSON.stringify(payload),
     });
 
-    if (response.ok) {
+    if (createPollResponse.ok) {
       setTitle("");
 
       if (socket) {
         socket.emit("createPoll");
       }
+
+      if (session?.user?.email) { 
+        const awardPointsResponse = await fetch(`http://127.0.0.1:8000/myapp/api/award-points/${session?.user?.email}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ points: 1 }),
+        });
+
+        if (!awardPointsResponse.ok) {
+          console.error("Failed to award points");
+        } else {
+          console.log("Awarded points");
+        }
+      }
+    } else {
+      console.error("Failed to create poll");
     }
   };
 
