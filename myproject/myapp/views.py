@@ -215,3 +215,24 @@ def get_user_badges(request, email):
     badges = user.badges.all()
     serializer = BadgeSerializer(badges, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def award_points_to_user(request, email):
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        points_to_add = int(request.data.get('points', 0))
+        if points_to_add <= 0:
+            raise ValueError("Points must be a positive integer.")
+    except (ValueError, TypeError):
+        return Response({"error": "Invalid points value provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    user.points += points_to_add
+    user.save()
+
+    # Return a success response
+    return Response({"message": f"Successfully awarded {points_to_add} points to user {email}."}, status=status.HTTP_200_OK)
+
