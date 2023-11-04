@@ -216,6 +216,14 @@ def get_user_badges(request, email):
     serializer = BadgeSerializer(badges, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def get_user_points(request, email):
+    try:
+        user = User.objects.get(email=email)
+        return Response({'points': user.points}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
 @api_view(['POST'])
 def award_points_to_user(request, email):
     try:
