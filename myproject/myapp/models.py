@@ -41,6 +41,7 @@ class User(models.Model):
                  ("male", "Male"), ("female", "Female"), ("other", "Other")],
         default="select"
     )
+    level = models.IntegerField(default=1, choices=[(1, 'Level 1'), (2, 'Level 2'), (3, 'Level 3')])
     points = models.IntegerField(default=10)
     image = models.URLField(blank=True, null=True)
     facebook_url = models.TextField(blank=True, null=True)

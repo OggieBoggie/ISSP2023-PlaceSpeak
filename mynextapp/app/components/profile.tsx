@@ -6,26 +6,36 @@ import { Transition } from "@headlessui/react";
 const Profile = () => {
   const { data: session } = useSession();
   const [points, setPoints] = useState<number>(0);
-  const [verificationLevel, setVerificationLevel] = useState<number>(1);
+  const [verificationLevel, setVerificationLevel] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
+  const [users, setUsers] = useState<User[]>([]);
 
-  const fetchUserPoints = async () => {
+  const fetchAllUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `http://127.0.0.1:8000/myapp/api/get_user_points/${session?.user?.email}/`
-      );
+      const response = await fetch("http://127.0.0.1:8000/myapp/api/users");
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
-      const data = await response.json();
-      setPoints(data.points);
+      const usersData = await response.json();
+      setUsers(usersData);
+  
+      const currentUserData = usersData.find((user: User) => user.email === session?.user?.email);
+      console.log(currentUserData)
+      setPoints(currentUserData ? currentUserData.points : 0);
+      setVerificationLevel(currentUserData ? currentUserData.level : 0);
     } catch (error) {
-      console.error('Error fetching user points:', error);
+      console.error('Error fetching all users:', error);
     } finally {
       setLoading(false);
     }
   };
+  
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, []); 
+
 
   const verificationBar = (level: number) => {
     return (
@@ -48,12 +58,6 @@ const Profile = () => {
     );
   };
 
-  useEffect(() => {
-    if (session?.user?.email) {
-      fetchUserPoints();
-    }
-  }, [session?.user?.email]);
-
   return (
     <div>
       <div className="flex flex-col items-center p-8">
@@ -73,7 +77,7 @@ const Profile = () => {
             {loading ? (
               <p>Loading points...</p>
             ) : (
-              <p className="text-lg text-gray-900">Points: {points}</p>
+              <p className="text-lg text-gray-900">Pinpoints: {points}</p>
             )}
           </div>
           <div className="mt-6 text-center border-t-2 border-gray-200 pt-4">

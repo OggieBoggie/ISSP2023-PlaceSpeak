@@ -3,6 +3,7 @@ interface User {
     name: string;
     image: string | null;
     points?: number | 0;
+    level?: number | 0;
     location?: string;
     description?: string;
     birthday?: string;
