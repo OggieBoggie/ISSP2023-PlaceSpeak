@@ -6,6 +6,7 @@ import { Transition } from "@headlessui/react";
 const Profile = () => {
   const { data: session } = useSession();
   const [points, setPoints] = useState<number>(0);
+  const [verificationLevel, setVerificationLevel] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchUserPoints = async () => {
@@ -24,6 +25,27 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const verificationBar = (level: number) => {
+    return (
+      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 border-2 border-gray-300">
+        <div className="flex h-2.5 rounded-full overflow-hidden">
+          <div
+            className={`flex-1 border-r-2 border-gray-300 ${level >= 1 ? 'bg-blue-600' : 'bg-transparent'
+              }`}
+          ></div>
+          <div
+            className={`flex-1 border-r-2 border-gray-300 ${level >= 2 ? 'bg-green-600' : 'bg-transparent'
+              }`}
+          ></div>
+          <div
+            className={`flex-1 ${level >= 3 ? 'bg-red-600' : 'bg-transparent'
+              }`}
+          ></div>
+        </div>
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -53,6 +75,22 @@ const Profile = () => {
             ) : (
               <p className="text-lg text-gray-900">Points: {points}</p>
             )}
+          </div>
+          <div className="mt-6 text-center border-t-2 border-gray-200 pt-4">
+            <p className="text-lg text-gray-900">You're {verificationLevel}/3 levels verified</p>
+            {verificationBar(verificationLevel)}
+            <div className="mt-4">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Placeholder for functionality to "level up"
+                }}
+                className="text-blue-600 hover:text-blue-800 visited:text-purple-600"
+              >
+                Level up
+              </a>
+            </div>
           </div>
         </div>
       </div>
