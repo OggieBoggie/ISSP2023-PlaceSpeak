@@ -88,7 +88,7 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
   if (session && session.user) {
     return (
       <div className="max-w-2xl mx-auto my-10 p-5 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
+        <h2 className="text-2xl font-bold text-center text-black mb-8"> 
           Create a New Poll
         </h2>
         <div className="mb-4">
@@ -97,7 +97,7 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
             value={pollData.title}
             onChange={handleTitleChange}
             placeholder="Poll Title"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors"
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors text-black" 
           />
         </div>
         <div className="mb-4">
@@ -105,12 +105,12 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
             value={pollData.description}
             onChange={handleDescriptionChange}
             placeholder="Poll Description"
-            rows="4"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors"
+            rows={4}
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors text-black" 
           />
         </div>
         <div className="mb-4">
-          <label className="text-gray-700 font-semibold">Choices:</label>
+          <label className="text-black font-semibold">Choices:</label> 
           {pollData.choices.map((choice, index) => (
             <div key={index} className="flex items-center mt-2">
               <input
@@ -118,13 +118,13 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
                 value={choice.text}
                 onChange={(e) => handleChoiceChange(index, e)}
                 placeholder={`Choice #${index + 1}`}
-                className="flex-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors"
+                className="flex-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors text-black" 
               />
               {pollData.choices.length > 1 && (
                 <button
                   type="button"
                   onClick={() => handleRemoveChoice(index)}
-                  className="ml-2 bg-red-500 text-white px-3 py-1 rounded shadow"
+                  className="ml-2 bg-red-500 text-white px-3 py-1 rounded shadow" 
                 >
                   Remove
                 </button>
@@ -134,7 +134,7 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
           <button
             type="button"
             onClick={handleAddChoice}
-            className="mt-3 bg-green-500 text-white px-3 py-1 rounded shadow"
+            className="mt-3 bg-green-500 text-white px-3 py-1 rounded shadow" 
           >
             Add Choice
           </button>
@@ -142,13 +142,14 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
         <div className="text-center mt-6">
           <button
             onClick={handleSubmit}
-            className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 shadow-lg"
+            className="bg-indigo-500 text-black px-4 py-2 rounded hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 shadow-lg"
           >
             Create Poll
           </button>
         </div>
       </div>
     );
+    
   }
   return null;
 };
