@@ -18,9 +18,18 @@ const MainComponent = () => {
   }, []);
 
   return (
-    <div>
-      {socket ? <CreatePoll socket={socket} /> : null}
-      {socket ? <LatestPolls socket={socket} /> : null}
+    <div
+      className="bg-gray-100 flex flex-col min-h-screen"
+      style={{ minHeight: "calc(100vh - 3.25rem)" }}
+    >
+      <div className="flex flex-col md:flex-row md:flex-grow">
+        <div className="w-full md:w-1/2 p-4 mt-4 md:mt-2">
+          {socket ? <CreatePoll socket={socket} /> : null}
+        </div>
+        <div className="w-full mx-auto md:w-1/2 p-4 md:mt-12 max-w-2xl">
+          {socket ? <LatestPolls socket={socket} /> : null}
+        </div>
+      </div>
     </div>
   );
 };
