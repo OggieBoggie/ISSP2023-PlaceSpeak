@@ -6,6 +6,9 @@ import { MapContainer, Polygon, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
+
+import Confetti from "../components/Confetti";
+
 let DefaultIcon = L.icon({
   iconUrl: icon.src, // convert StaticImageData to string
   shadowUrl: iconShadow.src, // convert StaticImageData to string
@@ -48,9 +51,11 @@ const MapWithLocation: React.FC<MapWithLocationProps> = ({
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [neighborhood, setNeighborhood] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const getLocation = () => {
     setIsLoading(true);
+    setIsVisible(false);
 
     navigator.geolocation.getCurrentPosition(async (pos) => {
       const { latitude, longitude } = pos.coords;
@@ -67,6 +72,7 @@ const MapWithLocation: React.FC<MapWithLocationProps> = ({
       // await updateUsrLocAction({ latitude: 49.283398, longitude: -123.115126 });
       await updateUsrLocAction({ latitude, longitude });
       setIsLoading(false);
+      setIsVisible(true);
     });
   };
 
@@ -81,6 +87,8 @@ const MapWithLocation: React.FC<MapWithLocationProps> = ({
           Get My Location
         </button>
       </div>
+
+      <div className="z-[500]">{isVisible && <Confetti />}</div>
 
       {isLoading && !position ? (
         <div className="flex justify-center items-center mt-4">
