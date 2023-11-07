@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Transition } from "@headlessui/react";
+import VerificationBar from "./VerificationBar";
 
 const Profile = () => {
   const { data: session } = useSession();
@@ -19,44 +20,23 @@ const Profile = () => {
       }
       const usersData = await response.json();
       setUsers(usersData);
-  
-      const currentUserData = usersData.find((user: User) => user.email === session?.user?.email);
-      console.log(currentUserData)
+
+      const currentUserData = usersData.find(
+        (user: User) => user.email === session?.user?.email
+      );
+      console.log(currentUserData);
       setPoints(currentUserData ? currentUserData.points : 0);
       setVerificationLevel(currentUserData ? currentUserData.level : 0);
     } catch (error) {
-      console.error('Error fetching all users:', error);
+      console.error("Error fetching all users:", error);
     } finally {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     fetchAllUsers();
-  }, []); 
-
-
-  const verificationBar = (level: number) => {
-    return (
-      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 border-2 border-gray-300">
-        <div className="flex h-2.5 rounded-full overflow-hidden">
-          <div
-            className={`flex-1 border-r-2 border-gray-300 ${level >= 1 ? 'bg-blue-600' : 'bg-transparent'
-              }`}
-          ></div>
-          <div
-            className={`flex-1 border-r-2 border-gray-300 ${level >= 2 ? 'bg-green-600' : 'bg-transparent'
-              }`}
-          ></div>
-          <div
-            className={`flex-1 ${level >= 3 ? 'bg-red-600' : 'bg-transparent'
-              }`}
-          ></div>
-        </div>
-      </div>
-    );
-  };
+  }, []);
 
   return (
     <div>
@@ -81,8 +61,13 @@ const Profile = () => {
             )}
           </div>
           <div className="mt-6 text-center border-t-2 border-gray-200 pt-4">
-            <p className="text-lg text-gray-900">You're {verificationLevel}/3 levels verified</p>
-            {verificationBar(verificationLevel)}
+            <p className="text-lg text-gray-900">
+              You're {verificationLevel}/3 levels verified
+            </p>
+
+            <div className="mt-4">
+              <VerificationBar level={verificationLevel} />
+            </div>
             <div className="mt-4">
               <a
                 href="#"
