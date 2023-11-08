@@ -236,3 +236,15 @@ def award_points_to_user(request, email):
     # Return a success response
     return Response({"message": f"Successfully awarded {points_to_add} points to user {email}."}, status=status.HTTP_200_OK)
 
+
+
+# @api_view(['POST'])
+# def award_verification_badge_to_user(request):
+#     try:
+#         user = User.objects.get(email=email)
+#     except User.DoesNotExist:
+#         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+#     if user.level == 1:
+#         user
+
+        

@@ -18,13 +18,6 @@ class Item(models.Model):
         return self.name
 
 
-class Badge(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-
-    def __str__(self):
-        return self.name
-
 # User Related Models
 
 
