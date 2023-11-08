@@ -7,4 +7,7 @@ interface User {
     location?: string;
     description?: string;
     birthday?: string;
+    facebook_url?: string;
+    twitter_x_url?: string;
+    linkedin_url?: string;
 }

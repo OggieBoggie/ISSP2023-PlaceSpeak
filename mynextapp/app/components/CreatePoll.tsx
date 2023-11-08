@@ -2,9 +2,12 @@
 import { useState } from "react";
 import { SocketType } from "../types/socket";
 import { useSession } from "next-auth/react";
+import Popup from "./Popup"
 
 const CreatePoll = ({ socket }: { socket: SocketType }) => {
   const { data: session } = useSession();
+  const [popupMessage, setPopupMessage] = useState('');
+  const [showPopup, setShowPopup] = useState(false);
   const [pollData, setPollData] = useState({
     title: "",
     description: "",
@@ -60,12 +63,12 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
     });
 
     if (createPollResponse.ok) {
-       setPollData({ title: "", description: "", choices: [{ text: "" }] });
+      setPollData({ title: "", description: "", choices: [{ text: "" }] });
       if (socket) {
         socket.emit("createPoll");
       }
 
-      if (session?.user?.email) { 
+      if (session?.user?.email) {
         const awardPointsResponse = await fetch(`http://127.0.0.1:8000/myapp/api/award-points/${session?.user?.email}/`, {
           method: "POST",
           headers: {
@@ -77,7 +80,8 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
         if (!awardPointsResponse.ok) {
           console.error("Failed to award points");
         } else {
-          console.log("Awarded points");
+          setPopupMessage(`Thank you for submitting the poll! You have earned ${1} point.`);
+          setShowPopup(true);
         }
       }
     } else {
@@ -88,7 +92,7 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
   if (session && session.user) {
     return (
       <div className="max-w-2xl mx-auto my-10 p-5 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-black mb-8"> 
+        <h2 className="text-2xl font-bold text-center text-black mb-8">
           Create a New Poll
         </h2>
         <div className="mb-4">
@@ -97,7 +101,7 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
             value={pollData.title}
             onChange={handleTitleChange}
             placeholder="Poll Title"
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors text-black" 
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors text-black"
           />
         </div>
         <div className="mb-4">
@@ -106,11 +110,11 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
             onChange={handleDescriptionChange}
             placeholder="Poll Description"
             rows={4}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors text-black" 
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors text-black"
           />
         </div>
         <div className="mb-4">
-          <label className="text-black font-semibold">Choices:</label> 
+          <label className="text-black font-semibold">Choices:</label>
           {pollData.choices.map((choice, index) => (
             <div key={index} className="flex items-center mt-2">
               <input
@@ -118,13 +122,13 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
                 value={choice.text}
                 onChange={(e) => handleChoiceChange(index, e)}
                 placeholder={`Choice #${index + 1}`}
-                className="flex-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors text-black" 
+                className="flex-1 p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500 transition-colors text-black"
               />
               {pollData.choices.length > 1 && (
                 <button
                   type="button"
                   onClick={() => handleRemoveChoice(index)}
-                  className="ml-2 bg-red-500 text-white px-3 py-1 rounded shadow" 
+                  className="ml-2 bg-red-500 text-white px-3 py-1 rounded shadow"
                 >
                   Remove
                 </button>
@@ -134,7 +138,7 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
           <button
             type="button"
             onClick={handleAddChoice}
-            className="mt-3 bg-green-500 text-white px-3 py-1 rounded shadow" 
+            className="mt-3 bg-green-500 text-white px-3 py-1 rounded shadow"
           >
             Add Choice
           </button>
@@ -147,9 +151,15 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
             Create Poll
           </button>
         </div>
+        <Popup
+          message={popupMessage}
+          show={showPopup}
+          duration={3000}
+          hide={() => setShowPopup(false)}
+        />
       </div>
     );
-    
+
   }
   return null;
 };
