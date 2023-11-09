@@ -2,7 +2,11 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 
+import Popup from "../components/Popup";
+
 export default function Account() {
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [popupMessage, setPopupMessage] = useState<string>('');
   const { data: session } = useSession();
   const [loading, setLoading] = useState<boolean>(false);
   const [form, setForm] = useState<User>({
@@ -43,6 +47,9 @@ export default function Account() {
         throw new Error(`Error: ${response.statusText}`);
       }
       const data = await response.json();
+
+      setPopupMessage('Profile updated successfully! 🎉');
+      setShowPopup(true);
     } catch (error) {
       console.error("Error updating user:", error);
     } finally {
@@ -206,6 +213,12 @@ export default function Account() {
           </div>
         </form>
       </div>
+      <Popup
+        message={popupMessage}
+        show={showPopup}
+        duration={3000}
+        hide={() => setShowPopup(false)}
+      />
     </div>
   );
 }
