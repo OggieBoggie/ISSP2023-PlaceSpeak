@@ -24,7 +24,6 @@ const Profile = () => {
       const currentUserData = usersData.find(
         (user: User) => user.email === session?.user?.email
       );
-      console.log(currentUserData);
       setPoints(currentUserData ? currentUserData.points : 0);
       setVerificationLevel(currentUserData ? currentUserData.level : 0);
     } catch (error) {
@@ -70,11 +69,7 @@ const Profile = () => {
             </div>
             <div className="mt-4">
               <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  // Placeholder for functionality to "level up"
-                }}
+                href="http://127.0.0.1:3000/profile/verfication"
                 className="text-blue-600 hover:text-blue-800 visited:text-purple-600"
               >
                 Level up

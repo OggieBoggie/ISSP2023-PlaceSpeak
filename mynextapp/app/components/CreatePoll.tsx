@@ -2,10 +2,13 @@
 import { useState } from "react";
 import { SocketType } from "../types/socket";
 import { useSession } from "next-auth/react";
-import Popup from "./Popup"
+
+import Popup from "./Popup";
+import Confetti from '../components/Confetti';
 
 const CreatePoll = ({ socket }: { socket: SocketType }) => {
   const { data: session } = useSession();
+  const [showConfetti, setShowConfetti] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [pollData, setPollData] = useState({
@@ -67,6 +70,8 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
       if (socket) {
         socket.emit("createPoll");
       }
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000);
 
       if (session?.user?.email) {
         const awardPointsResponse = await fetch(`http://127.0.0.1:8000/myapp/api/award-points/${session?.user?.email}/`, {
@@ -157,6 +162,7 @@ const CreatePoll = ({ socket }: { socket: SocketType }) => {
           duration={3000}
           hide={() => setShowPopup(false)}
         />
+        {showConfetti && <Confetti />}
       </div>
     );
 
