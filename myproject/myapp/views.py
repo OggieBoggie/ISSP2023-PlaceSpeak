@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Item, Van_Nbhd, Ca_Nbhd, User, Poll
+from .models import Item, Van_Nbhd, Ca_Nbhd, User, Poll, Badges, UserBadge
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -205,16 +205,7 @@ class PollCreateUpdateRetrieveAPIView(mixins.CreateModelMixin,
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
-@api_view(['GET'])
-def get_user_badges(request, email):
-    try:
-        user = User.objects.get(email=email)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    badges = user.badges.all()
-    serializer = BadgeSerializer(badges, many=True)
-    return Response(serializer.data)
 
 @api_view(['POST'])
 def award_points_to_user(request, email):
@@ -238,13 +229,33 @@ def award_points_to_user(request, email):
 
 
 
-# @api_view(['POST'])
-# def award_verification_badge_to_user(request):
-#     try:
-#         user = User.objects.get(email=email)
-#     except User.DoesNotExist:
-#         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-#     if user.level == 1:
-#         user
+@api_view(['GET'])
+def award_verification_badge_to_user(request, email):
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    badge = Badges.objects.get(type='verification')  # example logic
+    if user.level == 1:  # change number to 3 when verification is done
+        user_badge, created = UserBadge.objects.get_or_create(user=user, badge=badge)
+        if created:
+            # Serialize the awarded badge
+            serializer = BadgeSerializer(badge)
+            return Response({"message": f"Badge '{badge.name}' awarded to user {user.email}.", "badge": serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Badge has already been awarded."}, status=status.HTTP_200_OK)
+    else:
+        # User does not meet the criteria for the badge
+        return Response({"error": "User does not meet the criteria for the badge"}, status=status.HTTP_400_BAD_REQUEST)
 
-        
+@api_view(['GET'])
+def get_user_badges(request, email):
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    user_badges = UserBadge.objects.filter(user=user).select_related('badge')
+    badges = [user_badge.badge for user_badge in user_badges]
+    serializer = BadgeSerializer(badges, many=True)
+    return Response(serializer.data)
