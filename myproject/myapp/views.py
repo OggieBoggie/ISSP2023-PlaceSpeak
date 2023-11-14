@@ -227,7 +227,23 @@ def award_points_to_user(request, email):
     # Return a success response
     return Response({"message": f"Successfully awarded {points_to_add} points to user {email}."}, status=status.HTTP_200_OK)
 
+@api_view(['GET', 'PUT'])
+def update_user_profile(request, email):
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
+    if request.method == 'GET':
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": f"Successfully updated profile for user {email}."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def award_verification_badge_to_user(request, email):

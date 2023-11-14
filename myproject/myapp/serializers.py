@@ -30,12 +30,11 @@ class BadgeSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(validators=[])
     badges = BadgeSerializer(many=True, read_only=True)
-    points = serializers.IntegerField(read_only=True)
-    level = serializers.IntegerField(read_only=True)
-
     class Meta:
         model = User
-        fields = ['email', 'name', 'image', 'badges', 'points', 'level']
+        fields = ['email', 'name', 'image', 'badges', 'points', 'level', 'gender', 'location', 'description', 'birthday', 'facebook_url', 'twitter_x_url', 'linkedin_url']
+        read_only_fields = ('points', 'level')
+
 
 
 class UserLocationSerializer(gis_serializers.GeoFeatureModelSerializer):
