@@ -89,15 +89,12 @@ class Badges(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     image = models.URLField(blank=True, null=True)
-    latitude = models.FloatField(null=True, blank=True)
-    longitude = models.FloatField(null=True, blank=True)
-    location = gis_models.PointField(null=True, blank=True, srid=4326)
-
+    
     class Meta:
         db_table = 'myapp_badges'
 
     def __str__(self):
-        return self.Name
+        return self.name
 
 
 class UserBadge(models.Model):

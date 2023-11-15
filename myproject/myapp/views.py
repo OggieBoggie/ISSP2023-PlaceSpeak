@@ -251,7 +251,7 @@ def award_verification_badge_to_user(request, email):
         user = User.objects.get(email=email)
     except User.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-    badge = Badges.objects.get(type='verification')  # example logic
+    badge = Badges.objects.get(type=1)  # example logic
     if user.level == 1:  # change number to 3 when verification is done
         user_badge, created = UserBadge.objects.get_or_create(user=user, badge=badge)
         if created:
@@ -263,6 +263,8 @@ def award_verification_badge_to_user(request, email):
     else:
         # User does not meet the criteria for the badge
         return Response({"error": "User does not meet the criteria for the badge"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 @api_view(['GET'])
 def get_user_badges(request, email):
