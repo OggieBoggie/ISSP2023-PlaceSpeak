@@ -1,10 +1,16 @@
 import { redirect } from "next/navigation";
 import Profile from "../components/profile";
-import Badges from "../components/Badges";
+// import Badges from "../components/Badges";
+import { BadgesClient as Badges } from '../components/Badges';
 import UserInfo from "../components/UserInfo";
 import NewsFeed from "../components/NewsFeed";
 import dynamic from "next/dynamic";
 import { getServerSession } from "next-auth";
+
+const DynamicBadges = dynamic(
+  () => import("../components/Badges"),
+  { ssr: false } // This will load the component only on client-side
+);
 
 const DynamicMapWithLocation = dynamic(
   () => import("../components/MapWithLocation"),
@@ -78,8 +84,8 @@ export default async function Component() {
         <div className="flex flex-col md:flex-row md:flex-grow">
           <div className="flex-1 p-4 md:max-w-md">
             <Profile />
-            <Badges />
-          </div>
+            <DynamicBadges/>
+        </div>
 
           <div className="w-full md:w-2/3 p-4 mt-4 md:mt-8">
             <UserInfo />
@@ -99,3 +105,4 @@ export default async function Component() {
   }
   return redirect("/");
 }
+
