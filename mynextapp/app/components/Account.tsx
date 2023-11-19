@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 
-import Popup from "../components/Popup";
+import Popup from "./Popup";
 
 export default function Account() {
   const [showPopup, setShowPopup] = useState<boolean>(false);
