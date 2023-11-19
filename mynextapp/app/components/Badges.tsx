@@ -2,7 +2,7 @@
 function Badges() {
     return (
         <div className="flex flex-col items-center">
-            <div className="bg-white p-8 rounded-lg shadow-md w-96 flex flex-col items-center p-8">
+            <div className="bg-white p-8 rounded-lg shadow-md w-96 flex flex-col items-center">
                 <h2 className="text-xl font-semibold mb-4">Badges</h2>
                 <div className="flex space-x-4 mb-4 justify-between">
                     <img src="https://cdn.discordapp.com/attachments/1017179203562651699/1164333245798821960/Untitled_3.png?ex=6542d4d6&is=65305fd6&hm=266f440316e4aa09d44a81bc28ac6ca9d5c5df7ea5cc021e23254f24ca8bb098&" alt="Badge 1" className="w-16 h-16 rounded-full object-cover" />
