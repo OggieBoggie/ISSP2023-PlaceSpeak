@@ -4,7 +4,7 @@ import { SocketType } from "../types/socket";
 import { useSession } from "next-auth/react";
 
 import Popup from "./Popup";
-import Confetti from '../components/Confetti';
+import Confetti from './Confetti';
 
 const CreatePoll = ({ socket }: { socket: SocketType }) => {
   const { data: session } = useSession();

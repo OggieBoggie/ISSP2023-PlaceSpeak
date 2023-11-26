@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
-import CreatePoll from "../components/CreatePoll";
-import LatestPolls from "../components/LatestPolls";
+import CreatePoll from "./CreatePoll";
+import LatestPolls from "./LatestPolls";
 import { SocketType } from "../types/socket";
 
 const MainComponent = () => {
