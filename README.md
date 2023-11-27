@@ -120,7 +120,7 @@ npm run dev
 
 Our development environment takes advantage of OAuth and NextAuth.js with using a Google email to login. You'll need to create a new project at https://console.cloud.google.com/ such as
 
-![](./images/Pasted%20image%2020231127005759.png]
+![](./images/Pasted%20image%2020231127005759.png)
 
 Create an OAuth Client ID under API & Services > Credentials and configure your OAuth consent as an external type. Fill in the details App Name: `PlaceSpeak-Development` and fill in your email to `User Support Email` and `Developer Contact Information` and click `Save and Continue`
 
