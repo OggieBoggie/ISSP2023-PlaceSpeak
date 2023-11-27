@@ -26,11 +26,11 @@ python -m venv env
 
 # Download Dependencies
 
-## Download Node.js
+## Install Node.js
 
 1. Download setup at https://nodejs.org/en
 
-## Download Python Modules
+## Install Python Modules
 
 1. Launch your virtual environment or open up your folder containing the PlaceSpeak repo
 2. Change your directory to /myproject
@@ -38,7 +38,7 @@ python -m venv env
 ```
 pip install -r ./requirements.txt
 ```
-## Download OSGeo4W
+## Install OSGeo4W
 
 1. Download the setup at https://trac.osgeo.org/osgeo4w/
 2. Start the setup and do express install
@@ -51,7 +51,7 @@ GEOS_LIBRARY_PATH = r'C:\OSGeo4W\bin\geos_c.dll'
 ...
 ```
 
-## Download PostgreSQL and PostGIS
+## Install PostgreSQL and PostGIS
 
 1. Download Postgres Version 16 at https://www.postgresql.org/download/
 2. Set password to "Password"
