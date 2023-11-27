@@ -127,6 +127,7 @@ Create an OAuth Client ID under API & Services > Credentials and configure your 
 Head back into the Credential Screen and createn an OAuth Client ID with application type `Web Application`
 
 Fill in the information so it's the same as this.
+
 ![](./images/Pasted%20image%2020231127015826.png)
 
 Generate a NextAuth secret with openSSL on either Linux or Windows
