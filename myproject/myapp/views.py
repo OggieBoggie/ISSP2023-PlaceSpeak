@@ -294,4 +294,4 @@ def get_user_badges(request, email):
     badges = [user_badge.badge for user_badge in user_badges]
     serializer = BadgeSerializer(badges, many=True)
     return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
