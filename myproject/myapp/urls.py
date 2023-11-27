@@ -24,4 +24,6 @@ urlpatterns = [
     path('api/polls/<int:pk>/', views.PollCreateUpdateRetrieveAPIView.as_view(), name='poll-retrieve-update'),
     path('api/award-points/<str:email>/', views.award_points_to_user, name='award-points-to-user'),
     path('api/users/profile/<str:email>/', views.update_user_profile, name='update-user-profile'),
+    path('api/award-badge-to-user/<str:email>/', views.award_badge_to_user, name='award-badge-to-user'),
+    path('api/get-badges/<str:email>', views.get_user_badges, name='get-user-badges')
 ]

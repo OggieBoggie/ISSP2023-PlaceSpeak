@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Item, Van_Nbhd, Ca_Nbhd, User, Poll
+from .models import Item, Van_Nbhd, Ca_Nbhd, User, Poll, Badges, UserBadge
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -12,8 +12,7 @@ from django.contrib.gis.geos import Point
 
 def item_list(request):
     items = Item.objects.all()
-    items_data = [{'name': item.name, 'location': item.location}
-                  for item in items]
+    items_data = [{'name': item.name, 'location': item.location} for item in items]
     return render(request, "hello.html", {"items": items_data})
 
 
@@ -205,16 +204,7 @@ class PollCreateUpdateRetrieveAPIView(mixins.CreateModelMixin,
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
-@api_view(['GET'])
-def get_user_badges(request, email):
-    try:
-        user = User.objects.get(email=email)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    badges = user.badges.all()
-    serializer = BadgeSerializer(badges, many=True)
-    return Response(serializer.data)
 
 @api_view(['POST'])
 def award_points_to_user(request, email):
@@ -253,3 +243,55 @@ def update_user_profile(request, email):
             serializer.save()
             return Response({"message": f"Successfully updated profile for user {email}."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def award_badge_to_user(request, email):
+    badge_name = request.data.get('badge_name')
+    # Checking to see if the user does exist first
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    # Now we check to see if the Badge exists 
+    try:
+        badge = Badges.objects.get(name=badge_name)
+    except Badges.DoesNotExist:
+        return Response({"error": "Badge type not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Badge awarding logic based on badge type
+    if badge_name == 'Participation':
+        #  Check if the user has participated in a certain number of discussions or topics.
+        pass
+    elif badge_name == 'Inviting':
+        # Verify if the user has invited a certain number of neighbors.
+        pass
+    elif badge_name == 'Identity':
+        if user.level != 3:
+            return Response({"error": "User does not meet the criteria for the Identity badge"}, status=status.HTTP_400_BAD_REQUEST)
+    elif badge_name == 'Involving':
+        #Determine if the user has made a specific number of comments in discussions.
+        pass
+    elif badge_name == 'Consult':
+        # Check if the user has taken a number of polls
+        pass
+
+    user_badge, created = UserBadge.objects.get_or_create(user=user, badge=badge)
+    if created:
+        return Response({"message": f"Badge '{badge.name}' awarded to user {user.email}."}, status=status.HTTP_200_OK)
+    else:
+        return Response({"message": "Badge has already been awarded."}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def get_user_badges(request, email):
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    user_badges = UserBadge.objects.filter(user=user).select_related('badge')
+    badges = [user_badge.badge for user_badge in user_badges]
+    serializer = BadgeSerializer(badges, many=True)
+    return Response(serializer.data)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
