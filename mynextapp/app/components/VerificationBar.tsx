@@ -2,11 +2,11 @@ const verificationBar = ({ level }: { level: number }) => {
   const getBackgroundColor = (levelValue: number) => {
     switch (levelValue) {
       case 1:
-        return "from-blue-500 to-blue-700";
+        return "from-red-500 to-red-700";
       case 2:
         return "from-green-500 to-green-700";
       case 3:
-        return "from-red-500 to-red-700";
+        return "from-blue-500 to-blue-700";
       default:
         return "from-gray-300 to-gray-500";
     }
